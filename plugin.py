@@ -212,7 +212,7 @@ class Game:
             
             # Show congratulatory message
             self.lastAnswer = time.time()
-            self.sendMessage('DING DING DING, \x02%s\x02 got the correct answer, \x02%s\x02, in \x02%0.4f\x02 seconds for \x02%d(+%d)\x02 points!' % (username, correctAnswer, timeElapsed, points, streakBonus))
+            self.sendMessage('YES, \x02%s\x02 got the correct answer, \x02%s\x02, in \x02%0.4f\x02 seconds for \x02%d(+%d)\x02 points!' % (username, correctAnswer, timeElapsed, points, streakBonus))
 
             if self.registryValue('general.showStats', self.channel):
                 if self.registryValue('general.globalStats'):
