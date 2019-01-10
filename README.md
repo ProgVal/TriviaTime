@@ -1,4 +1,4 @@
-#Configuration
+# Configuration
 
 Requires Limnoria and Python 3
 
@@ -26,7 +26,33 @@ Requires Limnoria and Python 3
 ## Question editing tools
 TriviaTime was designed to make editing, deleting, and adding questions a breeze, for both administrators and players. However, due to the amount of tools available, it can be complicated to new players. Instructions on these tools are available [here][].
 
-#How to set up the website
+## How to modify configuration
+
+Do not touch `config.py` or any other configuration file.  Instead, use the Config plugin on IRC:
+
+```
+.config plugins.pluginName.parameterGroup.parameterName value
+```
+
+Examples:
+```
+# Modify duration of time in between hints to 15 seconds:
+.config plugins.triviatime.questions.hinttime 15
+
+# Modify duration of time in between KAOS hints to 20 seconds:
+.config plugins.triviatime.kaos.hintkaos 20
+
+# Modify command to show additional hint to ~:
+.config plugins.triviatime.commands.extraHint ~
+```
+
+For a full list of general Limnoria configuration parameters, see the `.conf` file in the bot base directory.
+
+For a full list of TriviaTime configuration parameters, refer to `config.py` in the `TriviaTime/` directory.
+
+---
+
+# How to set up the website
 
 ## Download and Install
 1. Install PHP (for PDO) and PHP-SQLite.
