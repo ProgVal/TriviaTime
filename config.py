@@ -97,7 +97,7 @@ conf.registerChannelValue(TriviaTime.kaos, 'hintKAOS',
         )
 
 conf.registerChannelValue(TriviaTime.general, 'waitTime', 
-        registry.Integer(30, 
+        registry.Integer(20,
                 """Seconds between the end of one question and the start of another""")
         )
 
