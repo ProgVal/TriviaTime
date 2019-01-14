@@ -57,7 +57,7 @@ conf.registerChannelValue(TriviaTime.general, 'globalStats',
         )
 
 conf.registerChannelValue(TriviaTime.hints, 'extraHintTime',
-        registry.Integer(90, 
+        registry.Integer(10,
                 """Number of seconds a user must wait between uses of the extra hint command.""")
         )
         
