@@ -137,7 +137,7 @@ conf.registerChannelValue(TriviaTime.voice, 'minPointsVoiceYear',
         )
 
 conf.registerChannelValue(TriviaTime.kaos, 'payoutKAOS', 
-        registry.Integer(25, 
+        registry.Integer(10,
                 """Extra points for teamwork on KAOS""")
         )
 
