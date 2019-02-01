@@ -72,7 +72,7 @@ conf.registerChannelValue(TriviaTime.general, 'showStats',
         )
 
 conf.registerChannelValue(TriviaTime.skip, 'skipThreshold', 
-        registry.Float(.35, 
+        registry.Float(.50,
                 """Percentage of active players who need to vote for a question to be skipped""")
         )
 
