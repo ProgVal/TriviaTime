@@ -4275,6 +4275,31 @@ class TriviaTime(callbacks.Plugin):
         self.reply(irc, msg, 'The current server time appears to be {0}'.format(timeStr), prefixNick=False)
     time = wrap(time)
 
+    def top(self, irc, msg, arg, channel, num=10):
+        """[<channel>] [<number>]
+            Displays the top scores of all time.
+            Parameter is optional, display up to that number. (eg 20 - display 11-20)
+            Channel is only required when using the command outside of a channel.
+        """
+        num = max(num, 10)
+        offset = num-9
+        dbLocation = self.registryValue('admin.db')
+        threadStorage = Storage(dbLocation)
+        if self.registryValue('general.globalStats'):
+            tops = threadStorage.viewAllTimeTop10(None, num)
+        else:
+            tops = threadStorage.viewAllTimeTop10(channel, num)
+
+        topsList = ['All Time Top {0}-{1} Players: '.format(offset, num)]
+        if tops:
+            for i in range(len(tops)):
+                topsList.append('\x02 #%d:\x02 %s %d ' % ((i+offset) , self.addZeroWidthSpace(tops[i]['username']), tops[i]['points']))
+        else:
+            topsList.append('No players')
+        topsText = ''.join(topsList)
+        self.reply(irc, msg, topsText, prefixNick=False)
+    top = wrap(top, ['channel', optional('int')])
+
     def transferpoints(self, irc, msg, arg, channel, userfrom, userto):
         """[<channel>] <userfrom> <userto>
         Transfers all points and records from one user to another.
