@@ -224,16 +224,19 @@ class Game:
                     todaysScore = stat['points_day']
                     weekScore = stat['points_week']
                     monthScore = stat['points_month']
+                    yearScore = stat['points_year']
+                    totalScore = stat['points_total']
                     recapMessageList = ['\x02%s\x02 has won \x02%d\x02 in a row!' % (username, self.streak)]
                     recapMessageList.append(' Total Points')
                     recapMessageList.append(' TODAY: \x02%d\x02' % (todaysScore))
                     if weekScore > points:
-                        recapMessageList.append(' this WEEK \x02%d\x02' % (weekScore))
-                    if weekScore > points or todaysScore > points:
-                        if monthScore > points:
-                            recapMessageList.append(' &')
+                        recapMessageList.append(' this WEEK: \x02%d\x02' % (weekScore))
                     if monthScore > points:
                         recapMessageList.append(' this MONTH: \x02%d\x02' % (monthScore))
+                    if yearScore > points:
+                        recapMessageList.append(' this YEAR: \x02%d\x02' % (yearScore))
+                    if totalScore > points:
+                        recapMessageList.append(' & ALL TIME: \x02%d\x02' % (totalScore))
                     recapMessage = ''.join(recapMessageList)
                     self.sendMessage(recapMessage)
         
