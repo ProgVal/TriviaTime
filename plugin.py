@@ -3695,18 +3695,26 @@ class TriviaTime(callbacks.Plugin):
         else:
             hasPoints = False
             infoList = ['%s\'s Stats: Points (answers)' % (self.addZeroWidthSpace(stat['username']))]
-            if rank['day'] > 0 or stat['points_day'] > 0 or stat['answer_day'] > 0:
-                hasPoints = True
-                infoList.append(' \x02Today:\x02 #%d %d (%d)' % (rank['day'], stat['points_day'], stat['answer_day']))
-            if rank['week'] > 0 or stat['points_week'] > 0 or stat['answer_week'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Week:\x02 #%d %d (%d)' % (rank['week'], stat['points_week'], stat['answer_week']))
-            if rank['month'] > 0 or stat['points_month'] > 0 or stat['answer_week'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Month:\x02 #%d %d (%d)' % (rank['month'], stat['points_month'], stat['answer_month']))
-            if rank['year'] > 0 or stat['points_year'] > 0 or stat['answer_year'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Year:\x02 #%d %d (%d)' % (rank['year'], stat['points_year'], stat['answer_year']))
+            if rank['day'] is not None and stat['points_day'] is not None and stat['answer_day'] is not None:
+                if rank['day'] > 0 or stat['points_day'] > 0 or stat['answer_day'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02Today:\x02 #%d %d (%d)' % (rank['day'], stat['points_day'], stat['answer_day']))
+            if rank['week'] is not None and stat['points_week'] is not None and stat['answer_week'] is not None:
+                if rank['week'] > 0 or stat['points_week'] > 0 or stat['answer_week'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Week:\x02 #%d %d (%d)' % (rank['week'], stat['points_week'], stat['answer_week']))
+            if rank['month'] is not None and stat['points_month'] is not None and stat['answer_month'] is not None:
+                if rank['month'] > 0 or stat['points_month'] > 0 or stat['answer_week'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Month:\x02 #%d %d (%d)' % (rank['month'], stat['points_month'], stat['answer_month']))
+            if rank['year'] is not None and stat['points_year'] is not None and stat['answer_year'] is not None:
+                if rank['year'] > 0 or stat['points_year'] > 0 or stat['answer_year'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Year:\x02 #%d %d (%d)' % (rank['year'], stat['points_year'], stat['answer_year']))
+            if rank['total'] is not None and stat['points_total'] is not None and stat['answer_total'] is not None:
+                if rank['total'] > 0 or stat['points_total'] > 0 or stat['answer_total'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02All Time:\x02 #%d %d (%d)' % (rank['total'], stat['points_total'], stat['answer_total']))
             if not hasPoints:
                 infoList = ['%s: You do not have any points.' % (username)]
                 if not identified:
@@ -4048,21 +4056,26 @@ class TriviaTime(callbacks.Plugin):
         else:
             hasPoints = False
             infoList = ['%s\'s Stats: Points (answers)' % (self.addZeroWidthSpace(stat['username']))]
-            if rank['day'] > 0 or stat['points_day'] > 0 or stat['answer_day'] > 0:
-                hasPoints = True
-                infoList.append(' \x02Today:\x02 #%d %d (%d)' % (rank['day'], stat['points_day'], stat['answer_day']))
-            if rank['week'] > 0 or stat['points_week'] > 0 or stat['answer_week'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Week:\x02 #%d %d (%d)' % (rank['week'], stat['points_week'], stat['answer_week']))
-            if rank['month'] > 0 or stat['points_month'] > 0 or stat['answer_month'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Month:\x02 #%d %d (%d)' % (rank['month'], stat['points_month'], stat['answer_month']))
-            if rank['year'] > 0 or stat['points_year'] > 0 or stat['answer_year'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Year:\x02 #%d %d (%d)' % (rank['year'], stat['points_year'], stat['answer_year']))
-            if rank['total'] > 0 or stat['points_total'] > 0 or stat['answer_total'] > 0:
-                hasPoints = True
-                infoList.append(' \x02All Time:\x02 #%d %d (%d)' % (rank['total'], stat['points_total'], stat['answer_total']))
+            if rank['day'] is not None and stat['points_day'] is not None and stat['answer_day'] is not None:
+                if rank['day'] > 0 or stat['points_day'] > 0 or stat['answer_day'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02Today:\x02 #%d %d (%d)' % (rank['day'], stat['points_day'], stat['answer_day']))
+            if rank['week'] is not None and stat['points_week'] is not None and stat['answer_week'] is not None:
+                if rank['week'] > 0 or stat['points_week'] > 0 or stat['answer_week'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Week:\x02 #%d %d (%d)' % (rank['week'], stat['points_week'], stat['answer_week']))
+            if rank['month'] is not None and stat['points_month'] is not None and stat['answer_month'] is not None:
+                if rank['month'] > 0 or stat['points_month'] > 0 or stat['answer_month'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Month:\x02 #%d %d (%d)' % (rank['month'], stat['points_month'], stat['answer_month']))
+            if rank['year'] is not None and stat['points_year'] is not None and stat['answer_year'] is not None:
+                if rank['year'] > 0 or stat['points_year'] > 0 or stat['answer_year'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Year:\x02 #%d %d (%d)' % (rank['year'], stat['points_year'], stat['answer_year']))
+            if rank['total'] is not None and stat['points_total'] is not None and stat['answer_total'] is not None:
+                if rank['total'] > 0 or stat['points_total'] > 0 or stat['answer_total'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02All Time:\x02 #%d %d (%d)' % (rank['total'], stat['points_total'], stat['answer_total']))
             if not hasPoints:
                 infoList = ['%s: %s does not have any points.' % (msg.nick, username)]
             infoText = ''.join(infoList)
