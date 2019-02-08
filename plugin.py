@@ -4060,6 +4060,9 @@ class TriviaTime(callbacks.Plugin):
             if rank['year'] > 0 or stat['points_year'] > 0 or stat['answer_year'] > 0:
                 hasPoints = True
                 infoList.append(' \x02This Year:\x02 #%d %d (%d)' % (rank['year'], stat['points_year'], stat['answer_year']))
+            if rank['total'] > 0 or stat['points_total'] > 0 or stat['answer_total'] > 0:
+                hasPoints = True
+                infoList.append(' \x02All Time:\x02 #%d %d (%d)' % (rank['total'], stat['points_total'], stat['answer_total']))
             if not hasPoints:
                 infoList = ['%s: %s does not have any points.' % (msg.nick, username)]
             infoText = ''.join(infoList)
