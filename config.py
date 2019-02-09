@@ -102,7 +102,7 @@ conf.registerChannelValue(TriviaTime.general, 'waitTime',
         )
 
 conf.registerChannelValue(TriviaTime.voice, 'enableVoice',
-        registry.Boolean(false,
+        registry.Boolean(False,
                 """Voice top players for week, month, and year""")
         )
         
