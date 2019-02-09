@@ -3304,13 +3304,16 @@ class TriviaTime(callbacks.Plugin):
         self.logger.doLog(irc, channel, '{0} cleared points for {1} in {2}.'.format(msg.nick, username, channel))
     clearpoints = wrap(clearpoints, ['channel', 'nick'])
 
-    def day(self, irc, msg, arg, channel, num=10):
+    def day(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>]
             Displays the top scores of the day. 
             Parameter is optional, display up to that number. (eg 20 - display 11-20)
             Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
@@ -3726,13 +3729,16 @@ class TriviaTime(callbacks.Plugin):
             self.reply(irc, msg, infoText, prefixNick=False)
     me = wrap(me, ['channel'])
 
-    def month(self, irc, msg, arg, channel, num=10):
+    def month(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>] 
             Displays the top ten scores of the month. 
             Parameter is optional, display up to that number. (eg 20 - display 11-20)
             Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
@@ -4297,13 +4303,16 @@ class TriviaTime(callbacks.Plugin):
         self.reply(irc, msg, 'The current server time appears to be {0}'.format(timeStr), prefixNick=False)
     time = wrap(time)
 
-    def top(self, irc, msg, arg, channel, num=10):
+    def top(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>]
             Displays the top scores of all time.
             Parameter is optional, display up to that number. (eg 20 - display 11-20)
             Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
@@ -4341,13 +4350,16 @@ class TriviaTime(callbacks.Plugin):
         self.logger.doLog(irc, channel, '{0} transferred records from {1} to {2} in {3}.'.format(msg.nick, userfrom, userto, channel))
     transferpoints = wrap(transferpoints, ['channel', 'nick', 'nick'])
 
-    def week(self, irc, msg, arg, channel, num=10):
+    def week(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>]
         Displays the top scores of the week. 
         Parameter is optional, display up to that number. (eg 20 - display 11-20)
         Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
@@ -4366,13 +4378,16 @@ class TriviaTime(callbacks.Plugin):
         self.reply(irc, msg, topsText, prefixNick=False)
     week = wrap(week, ['channel', optional('int')])
 
-    def year(self, irc, msg, arg, channel, num=10):
+    def year(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>]
             Displays the top scores of the year. 
             Parameter is optional, display up to that number. (eg 20 - display 11-20)
             Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
