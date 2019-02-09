@@ -590,12 +590,13 @@ class Game:
         if len(questionParts) > 1:
             question = questionParts[0].strip()
             answers = []
-            # Parse question and answers
+            # Parse question for KAOS
             if ircutils.toLower(question[:4]) == 'kaos':
                 questionType = 'kaos'
                 for ans in questionParts[1:]:
                     if answers.count(ans) == 0: # Filter out duplicate answers
                         answers.append(str(ans).strip())
+            # Parse question for Unscramble
             elif ircutils.toLower(question[:5]) == 'uword':
                 questionType = 'uword'
                 ans = questionParts[1]
@@ -603,11 +604,13 @@ class Game:
                 shuffledLetters = list(str(ans))
                 random.shuffle(shuffledLetters)
                 question = 'Unscramble the letters: {0}'.format(' '.join(shuffledLetters))
+            # Parse standard question
             else:
                 questionType = 'regular'
                 for ans in questionParts[1:]:
                     answers.append(str(ans).strip())
 
+            # Calculate base points
             if questionType == 'kaos':
                 points = self.registryValue('kaos.defaultKAOS', self.channel) * len(answers)
             else:
