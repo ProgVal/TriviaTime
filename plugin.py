@@ -632,8 +632,8 @@ class Game:
         return {'id': rawData['id'],
                 'type': 'kaos',
                 'points': 10050,
-                'question': 'KAOS: The 10 Worst U.S. Presidents (Last Name Only)? (This is a panic question, if you see this report this question. it is malformed.)',
-                'answers': ['Bush', 'Nixon', 'Hoover', 'Grant', 'Johnson', 'Ford', 'Reagan', 'Coolidge', 'Pierce']
+                'question': 'KAOS: The most awesome users in this channel? (This is a panic question, if you see this report this question. it is malformed. Please report immediately.)',
+                'answers': ['cars', 'some_weirdo', 'kessa', 'paimun']
                 }
 
     def sendMessage(self, msg, color=None, bgcolor=None):
