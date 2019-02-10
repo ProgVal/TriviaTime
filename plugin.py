@@ -634,7 +634,7 @@ class Game:
         # default question, everything went wrong with grabbing question
         return {'id': rawData['id'],
                 'type': 'kaos',
-                'points': 10050,
+                'points': 10,
                 'question': 'KAOS: The most awesome users in this channel? (This is a panic question, if you see this report this question. it is malformed. Please report immediately.)',
                 'answers': ['cars', 'some_weirdo', 'kessa', 'paimun']
                 }
