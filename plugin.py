@@ -3443,7 +3443,10 @@ class TriviaTime(callbacks.Plugin):
         else:
             count = threadStorage.countDeletes(channel)
         pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
+        if page is not None:
+            page = max(1, min(page, pages))
+        else:
+            page = 1
         if self.registryValue('general.globalstats'):
             deletes = threadStorage.getDeleteTop3(page)
         else:
@@ -3482,7 +3485,10 @@ class TriviaTime(callbacks.Plugin):
         else:
             count = threadStorage.countEdits(channel)
         pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
+        if page is not None:
+            page = max(1, min(page, pages))
+        else:
+            page = 1
         if self.registryValue('general.globalstats'):
             edits = threadStorage.getEditTop3(page)
         else:
@@ -3520,7 +3526,10 @@ class TriviaTime(callbacks.Plugin):
         else:
             count = threadStorage.countMyEdits(username, channel)
         pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
+        if page is not None:
+            page = max(1, min(page, pages))
+        else:
+            page = 1
         if self.registryValue('general.globalstats'):
             edits = threadStorage.getMyEditTop3(username, page)
         else:
@@ -3558,7 +3567,10 @@ class TriviaTime(callbacks.Plugin):
         else:
             count = threadStorage.countNotMyEdits(username, channel)
         pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
+        if page is not None:
+            page = max(1, min(page, pages))
+        else:
+            page = 1
         if self.registryValue('general.globalstats'):
             edits = threadStorage.getNotMyEditTop3(username, page)
         else:
@@ -3590,7 +3602,10 @@ class TriviaTime(callbacks.Plugin):
         else:
             count = threadStorage.countReports(channel)
         pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
+        if page is not None:
+            page = max(1, min(page, pages))
+        else:
+            page = 1
         if self.registryValue('general.globalstats'):
             reports = threadStorage.getReportTop3(page)
         else:
@@ -3627,7 +3642,10 @@ class TriviaTime(callbacks.Plugin):
         else:
             count = threadStorage.countTemporaryQuestions(channel)
         pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
+        if page is not None:
+            page = max(1, min(page, pages))
+        else:
+            page = 1
         if self.registryValue('general.globalstats'):
             q = threadStorage.getTemporaryQuestionTop3(page)
         else:
