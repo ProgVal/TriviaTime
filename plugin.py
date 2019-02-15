@@ -3442,7 +3442,7 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countDeletes()
         else:
             count = threadStorage.countDeletes(channel)
-        pages = int(count / 5) + int(count % 5 > 0)
+        pages = int(count / 3) + int(count % 3 > 0)
         if page is not None:
             page = max(1, min(page, pages))
         else:
@@ -3484,7 +3484,7 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countEdits()
         else:
             count = threadStorage.countEdits(channel)
-        pages = int(count / 5) + int(count % 5 > 0)
+        pages = int(count / 3) + int(count % 3 > 0)
         if page is not None:
             page = max(1, min(page, pages))
         else:
@@ -3525,7 +3525,7 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countMyEdits(username)
         else:
             count = threadStorage.countMyEdits(username, channel)
-        pages = int(count / 5) + int(count % 5 > 0)
+        pages = int(count / 3) + int(count % 3 > 0)
         if page is not None:
             page = max(1, min(page, pages))
         else:
@@ -3566,7 +3566,7 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countNotMyEdits(username)
         else:
             count = threadStorage.countNotMyEdits(username, channel)
-        pages = int(count / 5) + int(count % 5 > 0)
+        pages = int(count / 3) + int(count % 3 > 0)
         if page is not None:
             page = max(1, min(page, pages))
         else:
@@ -3601,7 +3601,7 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countReports()
         else:
             count = threadStorage.countReports(channel)
-        pages = int(count / 5) + int(count % 5 > 0)
+        pages = int(count / 3) + int(count % 3 > 0)
         if page is not None:
             page = max(1, min(page, pages))
         else:
@@ -3641,7 +3641,7 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countTemporaryQuestions()
         else:
             count = threadStorage.countTemporaryQuestions(channel)
-        pages = int(count / 5) + int(count % 5 > 0)
+        pages = int(count / 3) + int(count % 3 > 0)
         if page is not None:
             page = max(1, min(page, pages))
         else:
