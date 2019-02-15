@@ -1458,11 +1458,11 @@ class Storage:
         c.close()
         return row
 
-    def getDeleteTop3(self, page=1, amount=3, channel=None):
+    def getDeleteTop5(self, page=1, amount=5, channel=None):
         if page < 1:
             page=1
         if amount < 1:
-            amount=3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1499,11 +1499,11 @@ class Storage:
         c.close()
         return row
 
-    def getReportTop3(self, page=1, amount=3, channel=None):
+    def getReportTop5(self, page=1, amount=5, channel=None):
         if page < 1:
             page=1
         if amount < 1:
-            amount=3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1522,11 +1522,11 @@ class Storage:
         c.close()
         return rows
 
-    def getTemporaryQuestionTop3(self, page=1, amount=3, channel=None):
+    def getTemporaryQuestionTop5(self, page=1, amount=5, channel=None):
         if page < 1:
             page=1
         if amount < 1:
-            amount=3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1564,11 +1564,11 @@ class Storage:
         c.close()
         return row
 
-    def getEditTop3(self, page=1, amount=3, channel=None):
+    def getEditTop5(self, page=1, amount=5, channel=None):
         if page < 1:
             page = 1
         if amount < 1:
-            amount = 3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1587,11 +1587,11 @@ class Storage:
         c.close()
         return rows
         
-    def getNotMyEditTop3(self, username, page=1, amount=3, channel=None):
+    def getNotMyEditTop5(self, username, page=1, amount=5, channel=None):
         if page < 1:
             page = 1
         if amount < 1:
-            amount = 3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1612,11 +1612,11 @@ class Storage:
         c.close()
         return rows
         
-    def getMyEditTop3(self, username, page=1, amount=3, channel=None):
+    def getMyEditTop5(self, username, page=1, amount=5, channel=None):
         if page < 1:
             page = 1
         if amount < 1:
-            amount = 3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -3448,9 +3448,9 @@ class TriviaTime(callbacks.Plugin):
         else:
             page = 1
         if self.registryValue('general.globalstats'):
-            deletes = threadStorage.getDeleteTop3(page)
+            deletes = threadStorage.getDeleteTop5(page)
         else:
-            deletes = threadStorage.getDeleteTop3(page, channel=channel)
+            deletes = threadStorage.getDeleteTop5(page, channel=channel)
             
         # Output list
         if count < 1:
@@ -3490,9 +3490,9 @@ class TriviaTime(callbacks.Plugin):
         else:
             page = 1
         if self.registryValue('general.globalstats'):
-            edits = threadStorage.getEditTop3(page)
+            edits = threadStorage.getEditTop5(page)
         else:
-            edits = threadStorage.getEditTop3(page, channel=channel)
+            edits = threadStorage.getEditTop5(page, channel=channel)
             
         # Output list
         if count < 1:
@@ -3531,9 +3531,9 @@ class TriviaTime(callbacks.Plugin):
         else:
             page = 1
         if self.registryValue('general.globalstats'):
-            edits = threadStorage.getMyEditTop3(username, page)
+            edits = threadStorage.getMyEditTop5(username, page)
         else:
-            edits = threadStorage.getMyEditTop3(username, page, channel=channel)
+            edits = threadStorage.getMyEditTop5(username, page, channel=channel)
             
         # Output list
         if count < 1:
@@ -3572,9 +3572,9 @@ class TriviaTime(callbacks.Plugin):
         else:
             page = 1
         if self.registryValue('general.globalstats'):
-            edits = threadStorage.getNotMyEditTop3(username, page)
+            edits = threadStorage.getNotMyEditTop5(username, page)
         else:
-            edits = threadStorage.getNotMyEditTop3(username, page, channel=channel)
+            edits = threadStorage.getNotMyEditTop5(username, page, channel=channel)
             
         # Output list
         if count < 1:
@@ -3607,9 +3607,9 @@ class TriviaTime(callbacks.Plugin):
         else:
             page = 1
         if self.registryValue('general.globalstats'):
-            reports = threadStorage.getReportTop3(page)
+            reports = threadStorage.getReportTop5(page)
         else:
-            reports = threadStorage.getReportTop3(page, channel=channel)
+            reports = threadStorage.getReportTop5(page, channel=channel)
         
         # Output list
         if count < 1:
@@ -3647,9 +3647,9 @@ class TriviaTime(callbacks.Plugin):
         else:
             page = 1
         if self.registryValue('general.globalstats'):
-            q = threadStorage.getTemporaryQuestionTop3(page)
+            q = threadStorage.getTemporaryQuestionTop5(page)
         else:
-            q = threadStorage.getTemporaryQuestionTop3(page, channel=channel)
+            q = threadStorage.getTemporaryQuestionTop5(page, channel=channel)
         
         # Output list
         if count < 1:
