@@ -194,14 +194,14 @@ class Game:
             if ircutils.toLower(self.lastWinner) != usernameCanonical:
                 #streakbreak
                 if self.streak > minStreak:
-                    streakBonus = points * .25
+                    streakBonus = int(points * .25)
                     self.sendMessage('\x02%s\x02 broke \x02%s\x02\'s streak of \x02%d\x02!' % (username, self.lastWinner, self.streak)) 
                 self.lastWinner = username
                 self.streak = 1
             else:
                 self.streak += 1
                 streakBonus = points * .25 * (self.streak-1)
-                streakBonus = min(streakBonus, points * .25)
+                streakBonus = int(min(streakBonus, points * .25))
 
             # Update database
             threadStorage.updateGameStreak(self.channel, self.lastWinner, self.streak)
