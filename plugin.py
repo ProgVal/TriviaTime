@@ -3116,7 +3116,7 @@ class TriviaTime(callbacks.Plugin):
             delete = threadStorage.getDeleteById(num, channel)
             
         if delete:
-            if username == delete['username']:
+            if username == delete['username'] and self.isTriviaMod(hostmask, channel) == False:
                 irc.reply('You cannot accept your own deletion request.')
             else:
                 questionNumber = delete['line_num']
