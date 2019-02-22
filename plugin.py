@@ -194,14 +194,14 @@ class Game:
             if ircutils.toLower(self.lastWinner) != usernameCanonical:
                 #streakbreak
                 if self.streak > minStreak:
-                    streakBonus = points * .25
+                    streakBonus = int(points * .25)
                     self.sendMessage('\x02%s\x02 broke \x02%s\x02\'s streak of \x02%d\x02!' % (username, self.lastWinner, self.streak)) 
                 self.lastWinner = username
                 self.streak = 1
             else:
                 self.streak += 1
                 streakBonus = points * .25 * (self.streak-1)
-                streakBonus = min(streakBonus, points * .25)
+                streakBonus = int(min(streakBonus, points * .25))
 
             # Update database
             threadStorage.updateGameStreak(self.channel, self.lastWinner, self.streak)
@@ -590,12 +590,13 @@ class Game:
         if len(questionParts) > 1:
             question = questionParts[0].strip()
             answers = []
-            # Parse question and answers
+            # Parse question for KAOS
             if ircutils.toLower(question[:4]) == 'kaos':
                 questionType = 'kaos'
                 for ans in questionParts[1:]:
                     if answers.count(ans) == 0: # Filter out duplicate answers
                         answers.append(str(ans).strip())
+            # Parse question for Unscramble
             elif ircutils.toLower(question[:5]) == 'uword':
                 questionType = 'uword'
                 ans = questionParts[1]
@@ -603,11 +604,13 @@ class Game:
                 shuffledLetters = list(str(ans))
                 random.shuffle(shuffledLetters)
                 question = 'Unscramble the letters: {0}'.format(' '.join(shuffledLetters))
+            # Parse standard question
             else:
                 questionType = 'regular'
                 for ans in questionParts[1:]:
                     answers.append(str(ans).strip())
 
+            # Calculate base points
             if questionType == 'kaos':
                 points = self.registryValue('kaos.defaultKAOS', self.channel) * len(answers)
             else:
@@ -631,9 +634,9 @@ class Game:
         # default question, everything went wrong with grabbing question
         return {'id': rawData['id'],
                 'type': 'kaos',
-                'points': 10050,
-                'question': 'KAOS: The 10 Worst U.S. Presidents (Last Name Only)? (This is a panic question, if you see this report this question. it is malformed.)',
-                'answers': ['Bush', 'Nixon', 'Hoover', 'Grant', 'Johnson', 'Ford', 'Reagan', 'Coolidge', 'Pierce']
+                'points': 10,
+                'question': 'KAOS: The most awesome users in this channel? (This is a panic question, if you see this report this question. it is malformed. Please report immediately.)',
+                'answers': ['cars', 'some_weirdo', 'kessa', 'paimun']
                 }
 
     def sendMessage(self, msg, color=None, bgcolor=None):
@@ -1455,11 +1458,11 @@ class Storage:
         c.close()
         return row
 
-    def getDeleteTop3(self, page=1, amount=3, channel=None):
+    def getDeleteTop5(self, page=1, amount=5, channel=None):
         if page < 1:
             page=1
         if amount < 1:
-            amount=3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1496,11 +1499,11 @@ class Storage:
         c.close()
         return row
 
-    def getReportTop3(self, page=1, amount=3, channel=None):
+    def getReportTop5(self, page=1, amount=5, channel=None):
         if page < 1:
             page=1
         if amount < 1:
-            amount=3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1519,11 +1522,11 @@ class Storage:
         c.close()
         return rows
 
-    def getTemporaryQuestionTop3(self, page=1, amount=3, channel=None):
+    def getTemporaryQuestionTop5(self, page=1, amount=5, channel=None):
         if page < 1:
             page=1
         if amount < 1:
-            amount=3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1561,11 +1564,11 @@ class Storage:
         c.close()
         return row
 
-    def getEditTop3(self, page=1, amount=3, channel=None):
+    def getEditTop5(self, page=1, amount=5, channel=None):
         if page < 1:
             page = 1
         if amount < 1:
-            amount = 3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1584,11 +1587,11 @@ class Storage:
         c.close()
         return rows
         
-    def getNotMyEditTop3(self, username, page=1, amount=3, channel=None):
+    def getNotMyEditTop5(self, username, page=1, amount=5, channel=None):
         if page < 1:
             page = 1
         if amount < 1:
-            amount = 3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -1609,11 +1612,11 @@ class Storage:
         c.close()
         return rows
         
-    def getMyEditTop3(self, username, page=1, amount=3, channel=None):
+    def getMyEditTop5(self, username, page=1, amount=5, channel=None):
         if page < 1:
             page = 1
         if amount < 1:
-            amount = 3
+            amount = 5
         page -= 1
         start = page * amount
         c = self.conn.cursor()
@@ -3113,7 +3116,7 @@ class TriviaTime(callbacks.Plugin):
             delete = threadStorage.getDeleteById(num, channel)
             
         if delete:
-            if username == delete['username']:
+            if username == delete['username'] and self.isTriviaMod(hostmask, channel) == False:
                 irc.reply('You cannot accept your own deletion request.')
             else:
                 questionNumber = delete['line_num']
@@ -3301,13 +3304,16 @@ class TriviaTime(callbacks.Plugin):
         self.logger.doLog(irc, channel, '{0} cleared points for {1} in {2}.'.format(msg.nick, username, channel))
     clearpoints = wrap(clearpoints, ['channel', 'nick'])
 
-    def day(self, irc, msg, arg, channel, num=10):
+    def day(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>]
             Displays the top scores of the day. 
             Parameter is optional, display up to that number. (eg 20 - display 11-20)
             Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
@@ -3436,12 +3442,15 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countDeletes()
         else:
             count = threadStorage.countDeletes(channel)
-        pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
-        if self.registryValue('general.globalstats'):
-            deletes = threadStorage.getDeleteTop3(page)
+        pages = int(count / 5) + int(count % 5 > 0)
+        if page is not None:
+            page = max(1, min(page, pages))
         else:
-            deletes = threadStorage.getDeleteTop3(page, channel=channel)
+            page = 1
+        if self.registryValue('general.globalstats'):
+            deletes = threadStorage.getDeleteTop5(page)
+        else:
+            deletes = threadStorage.getDeleteTop5(page, channel=channel)
             
         # Output list
         if count < 1:
@@ -3475,12 +3484,15 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countEdits()
         else:
             count = threadStorage.countEdits(channel)
-        pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
-        if self.registryValue('general.globalstats'):
-            edits = threadStorage.getEditTop3(page)
+        pages = int(count / 5) + int(count % 5 > 0)
+        if page is not None:
+            page = max(1, min(page, pages))
         else:
-            edits = threadStorage.getEditTop3(page, channel=channel)
+            page = 1
+        if self.registryValue('general.globalstats'):
+            edits = threadStorage.getEditTop5(page)
+        else:
+            edits = threadStorage.getEditTop5(page, channel=channel)
             
         # Output list
         if count < 1:
@@ -3513,12 +3525,15 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countMyEdits(username)
         else:
             count = threadStorage.countMyEdits(username, channel)
-        pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
-        if self.registryValue('general.globalstats'):
-            edits = threadStorage.getMyEditTop3(username, page)
+        pages = int(count / 5) + int(count % 5 > 0)
+        if page is not None:
+            page = max(1, min(page, pages))
         else:
-            edits = threadStorage.getMyEditTop3(username, page, channel=channel)
+            page = 1
+        if self.registryValue('general.globalstats'):
+            edits = threadStorage.getMyEditTop5(username, page)
+        else:
+            edits = threadStorage.getMyEditTop5(username, page, channel=channel)
             
         # Output list
         if count < 1:
@@ -3551,12 +3566,15 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countNotMyEdits(username)
         else:
             count = threadStorage.countNotMyEdits(username, channel)
-        pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
-        if self.registryValue('general.globalstats'):
-            edits = threadStorage.getNotMyEditTop3(username, page)
+        pages = int(count / 5) + int(count % 5 > 0)
+        if page is not None:
+            page = max(1, min(page, pages))
         else:
-            edits = threadStorage.getNotMyEditTop3(username, page, channel=channel)
+            page = 1
+        if self.registryValue('general.globalstats'):
+            edits = threadStorage.getNotMyEditTop5(username, page)
+        else:
+            edits = threadStorage.getNotMyEditTop5(username, page, channel=channel)
             
         # Output list
         if count < 1:
@@ -3583,12 +3601,15 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countReports()
         else:
             count = threadStorage.countReports(channel)
-        pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
-        if self.registryValue('general.globalstats'):
-            reports = threadStorage.getReportTop3(page)
+        pages = int(count / 5) + int(count % 5 > 0)
+        if page is not None:
+            page = max(1, min(page, pages))
         else:
-            reports = threadStorage.getReportTop3(page, channel=channel)
+            page = 1
+        if self.registryValue('general.globalstats'):
+            reports = threadStorage.getReportTop5(page)
+        else:
+            reports = threadStorage.getReportTop5(page, channel=channel)
         
         # Output list
         if count < 1:
@@ -3620,12 +3641,15 @@ class TriviaTime(callbacks.Plugin):
             count = threadStorage.countTemporaryQuestions()
         else:
             count = threadStorage.countTemporaryQuestions(channel)
-        pages = int(count / 3) + int(count % 3 > 0)
-        page = max(1, min(page, pages))
-        if self.registryValue('general.globalstats'):
-            q = threadStorage.getTemporaryQuestionTop3(page)
+        pages = int(count / 5) + int(count % 5 > 0)
+        if page is not None:
+            page = max(1, min(page, pages))
         else:
-            q = threadStorage.getTemporaryQuestionTop3(page, channel=channel)
+            page = 1
+        if self.registryValue('general.globalstats'):
+            q = threadStorage.getTemporaryQuestionTop5(page)
+        else:
+            q = threadStorage.getTemporaryQuestionTop5(page, channel=channel)
         
         # Output list
         if count < 1:
@@ -3649,7 +3673,7 @@ class TriviaTime(callbacks.Plugin):
         threadStorage = Storage(dbLocation)
         totalUsersEver = threadStorage.getNumUser(channel)
         numActiveThisWeek = threadStorage.getNumActiveThisWeek(channel)
-        infoText = ' TriviaTime v1.3.2 by Trivialand on Freenode: https://github.com/tannn/TriviaTime '
+        infoText = ' TriviaTime fork for #trivia on Snoonet: https://github.com/loljoho/TriviaTime '
         self.reply(irc, msg, infoText, prefixNick=False)
         infoText = '\x02 %d Users\x02 on scoreboard with \x02%d Active This Week\x02' % (totalUsersEver, numActiveThisWeek)
         self.reply(irc, msg, infoText, prefixNick=False)
@@ -3695,18 +3719,26 @@ class TriviaTime(callbacks.Plugin):
         else:
             hasPoints = False
             infoList = ['%s\'s Stats: Points (answers)' % (self.addZeroWidthSpace(stat['username']))]
-            if rank['day'] > 0 or stat['points_day'] > 0 or stat['answer_day'] > 0:
-                hasPoints = True
-                infoList.append(' \x02Today:\x02 #%d %d (%d)' % (rank['day'], stat['points_day'], stat['answer_day']))
-            if rank['week'] > 0 or stat['points_week'] > 0 or stat['answer_week'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Week:\x02 #%d %d (%d)' % (rank['week'], stat['points_week'], stat['answer_week']))
-            if rank['month'] > 0 or stat['points_month'] > 0 or stat['answer_week'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Month:\x02 #%d %d (%d)' % (rank['month'], stat['points_month'], stat['answer_month']))
-            if rank['year'] > 0 or stat['points_year'] > 0 or stat['answer_year'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Year:\x02 #%d %d (%d)' % (rank['year'], stat['points_year'], stat['answer_year']))
+            if rank['day'] is not None and stat['points_day'] is not None and stat['answer_day'] is not None:
+                if rank['day'] > 0 or stat['points_day'] > 0 or stat['answer_day'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02Today:\x02 #%d %d (%d)' % (rank['day'], stat['points_day'], stat['answer_day']))
+            if rank['week'] is not None and stat['points_week'] is not None and stat['answer_week'] is not None:
+                if rank['week'] > 0 or stat['points_week'] > 0 or stat['answer_week'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Week:\x02 #%d %d (%d)' % (rank['week'], stat['points_week'], stat['answer_week']))
+            if rank['month'] is not None and stat['points_month'] is not None and stat['answer_month'] is not None:
+                if rank['month'] > 0 or stat['points_month'] > 0 or stat['answer_week'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Month:\x02 #%d %d (%d)' % (rank['month'], stat['points_month'], stat['answer_month']))
+            if rank['year'] is not None and stat['points_year'] is not None and stat['answer_year'] is not None:
+                if rank['year'] > 0 or stat['points_year'] > 0 or stat['answer_year'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Year:\x02 #%d %d (%d)' % (rank['year'], stat['points_year'], stat['answer_year']))
+            if rank['total'] is not None and stat['points_total'] is not None and stat['answer_total'] is not None:
+                if rank['total'] > 0 or stat['points_total'] > 0 or stat['answer_total'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02All Time:\x02 #%d %d (%d)' % (rank['total'], stat['points_total'], stat['answer_total']))
             if not hasPoints:
                 infoList = ['%s: You do not have any points.' % (username)]
                 if not identified:
@@ -3715,13 +3747,16 @@ class TriviaTime(callbacks.Plugin):
             self.reply(irc, msg, infoText, prefixNick=False)
     me = wrap(me, ['channel'])
 
-    def month(self, irc, msg, arg, channel, num=10):
+    def month(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>] 
             Displays the top ten scores of the month. 
             Parameter is optional, display up to that number. (eg 20 - display 11-20)
             Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
@@ -4019,7 +4054,7 @@ class TriviaTime(callbacks.Plugin):
             # Update skip count
             game.skipList.append(usernameCanonical)
             game.skipTimeoutList.append(usernameCanonical)
-            self.reply(irc, msg, '%s voted to skip this question.' % username, prefixNick=False)
+            self.reply(irc, msg, '%s voted to skip this question.' % username, (len(game.skipList), totalActive), prefixNick=False)
             skipPercent = len(game.skipList)/(totalActive*1.0)
 
             # Check if skip threshold has been reached
@@ -4048,18 +4083,26 @@ class TriviaTime(callbacks.Plugin):
         else:
             hasPoints = False
             infoList = ['%s\'s Stats: Points (answers)' % (self.addZeroWidthSpace(stat['username']))]
-            if rank['day'] > 0 or stat['points_day'] > 0 or stat['answer_day'] > 0:
-                hasPoints = True
-                infoList.append(' \x02Today:\x02 #%d %d (%d)' % (rank['day'], stat['points_day'], stat['answer_day']))
-            if rank['week'] > 0 or stat['points_week'] > 0 or stat['answer_week'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Week:\x02 #%d %d (%d)' % (rank['week'], stat['points_week'], stat['answer_week']))
-            if rank['month'] > 0 or stat['points_month'] > 0 or stat['answer_month'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Month:\x02 #%d %d (%d)' % (rank['month'], stat['points_month'], stat['answer_month']))
-            if rank['year'] > 0 or stat['points_year'] > 0 or stat['answer_year'] > 0:
-                hasPoints = True
-                infoList.append(' \x02This Year:\x02 #%d %d (%d)' % (rank['year'], stat['points_year'], stat['answer_year']))
+            if rank['day'] is not None and stat['points_day'] is not None and stat['answer_day'] is not None:
+                if rank['day'] > 0 or stat['points_day'] > 0 or stat['answer_day'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02Today:\x02 #%d %d (%d)' % (rank['day'], stat['points_day'], stat['answer_day']))
+            if rank['week'] is not None and stat['points_week'] is not None and stat['answer_week'] is not None:
+                if rank['week'] > 0 or stat['points_week'] > 0 or stat['answer_week'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Week:\x02 #%d %d (%d)' % (rank['week'], stat['points_week'], stat['answer_week']))
+            if rank['month'] is not None and stat['points_month'] is not None and stat['answer_month'] is not None:
+                if rank['month'] > 0 or stat['points_month'] > 0 or stat['answer_month'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Month:\x02 #%d %d (%d)' % (rank['month'], stat['points_month'], stat['answer_month']))
+            if rank['year'] is not None and stat['points_year'] is not None and stat['answer_year'] is not None:
+                if rank['year'] > 0 or stat['points_year'] > 0 or stat['answer_year'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02This Year:\x02 #%d %d (%d)' % (rank['year'], stat['points_year'], stat['answer_year']))
+            if rank['total'] is not None and stat['points_total'] is not None and stat['answer_total'] is not None:
+                if rank['total'] > 0 or stat['points_total'] > 0 or stat['answer_total'] > 0:
+                    hasPoints = True
+                    infoList.append(' \x02All Time:\x02 #%d %d (%d)' % (rank['total'], stat['points_total'], stat['answer_total']))
             if not hasPoints:
                 infoList = ['%s: %s does not have any points.' % (msg.nick, username)]
             infoText = ''.join(infoList)
@@ -4278,13 +4321,16 @@ class TriviaTime(callbacks.Plugin):
         self.reply(irc, msg, 'The current server time appears to be {0}'.format(timeStr), prefixNick=False)
     time = wrap(time)
 
-    def top(self, irc, msg, arg, channel, num=10):
+    def top(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>]
             Displays the top scores of all time.
             Parameter is optional, display up to that number. (eg 20 - display 11-20)
             Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
@@ -4322,13 +4368,16 @@ class TriviaTime(callbacks.Plugin):
         self.logger.doLog(irc, channel, '{0} transferred records from {1} to {2} in {3}.'.format(msg.nick, userfrom, userto, channel))
     transferpoints = wrap(transferpoints, ['channel', 'nick', 'nick'])
 
-    def week(self, irc, msg, arg, channel, num=10):
+    def week(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>]
         Displays the top scores of the week. 
         Parameter is optional, display up to that number. (eg 20 - display 11-20)
         Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
@@ -4347,13 +4396,16 @@ class TriviaTime(callbacks.Plugin):
         self.reply(irc, msg, topsText, prefixNick=False)
     week = wrap(week, ['channel', optional('int')])
 
-    def year(self, irc, msg, arg, channel, num=10):
+    def year(self, irc, msg, arg, channel, num):
         """[<channel>] [<number>]
             Displays the top scores of the year. 
             Parameter is optional, display up to that number. (eg 20 - display 11-20)
             Channel is only required when using the command outside of a channel.
         """
-        num = max(num, 10)
+        if num is not None:
+            num = max(num, 10)
+        else:
+            num = 10
         offset = num-9
         dbLocation = self.registryValue('admin.db')
         threadStorage = Storage(dbLocation)
