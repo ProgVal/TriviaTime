@@ -3,6 +3,8 @@ $login = $container->login;
 
 $isMod = false;
 
+
+
 if($login->isLoggedIn()) {
   if(!is_null($login->getUser())) {
     $capabilities = $login->getUser()->getCapability();
