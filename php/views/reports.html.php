@@ -50,7 +50,7 @@ if($login->isLoggedIn()) {
               echo '<td class="breakable">' . htmlspecialchars($res['original']) . '</td>';
               echo '<td class="breakable">' . htmlspecialchars($res['report_text']) . '</td>';
               if($isMod) {
-                echo '<td><a href="' . $container->router->generate('remove-report', array("id"=>$res['id'])) . '" class="btn btn-mini"><i class="icon-ban-circle"></i></a></td>';
+                echo '<td><a href="' . $container->router->generate('remove-report', array("id"=>$res['id'])) . '" class="btn btn-mini" data-toggle="tooltip" title="Remove Report"><i class="icon-ban-circle"></i></a></td>';
               }
               echo '</tr>';
             }
@@ -139,7 +139,7 @@ if($login->isLoggedIn()) {
               echo '<td class="breakable">' . htmlspecialchars($res['original']) . '</td>';
               echo '<td class="hidden-phone">' . $res['question_id'] . '</td>';
               if($isMod) {
-                echo '<td><a href="' . $container->router->generate('accept-edit', array("id"=>$res['id'])) . '" class="btn btn-mini"><i class="icon-ok"></i></a> <a href="' . $container->router->generate('remove-edit', array("id"=>$res['id'])) . '" class="btn btn-mini"><i class="icon-ban-circle"></i></a></td>';
+                echo '<td><a href="' . $container->router->generate('accept-edit', array("id"=>$res['id'])) . '" class="btn btn-mini" data-toggle="tooltip" title="Accept Edit"><i class="icon-ok"></i></a> <a href="' . $container->router->generate('remove-edit', array("id"=>$res['id'])) . '" class="btn btn-mini" data-toggle="tooltip" title="Remove Edit"><i class="icon-ban-circle"></i></a></td>';
               }
               echo '</tr>';
             }
@@ -182,7 +182,7 @@ if($login->isLoggedIn()) {
               echo '<td>' . htmlspecialchars($res['username']) . '</td>';
               echo '<td class="breakable">' . htmlspecialchars($res['question']) . '</td>';
               if($isMod) {
-                echo '<td><a href="' . $container->router->generate('accept-new', array("id"=>$res['id'])) . '" class="btn btn-mini"><i class="icon-ok"></i></a> <a href="' . $container->router->generate('remove-new', array("id"=>$res['id'])) . '" class="btn btn-mini"><i class="icon-ban-circle"></i></a></td>';
+                echo '<td><a href="' . $container->router->generate('accept-new', array("id"=>$res['id'])) . '" class="btn btn-mini" data-toggle="tooltip" title="Accept New"><i class="icon-ok"></i></a> <a href="' . $container->router->generate('remove-new', array("id"=>$res['id'])) . '" class="btn btn-mini" data-toggle="tooltip" title="Remove New"><i class="icon-ban-circle"></i></a></td>';
               }
               echo '</tr>';
             }
@@ -229,7 +229,7 @@ if($login->isLoggedIn()) {
               echo '<td class="hidden-phone">' . $res['line_num'] . '</td>';
               echo '<td class="breakable">' . htmlspecialchars($res['reason']) . '</td>';
               if($isMod) {
-                echo '<td><a href="' . $container->router->generate('accept-delete', array("id"=>$res['id'])) . '" class="btn btn-mini"><i class="icon-ok"></i></a> <a href="' . $container->router->generate('remove-delete', array("id"=>$res['id'])) . '" class="btn btn-mini"><i class="icon-ban-circle"></i></a></td>';
+                echo '<td><a href="' . $container->router->generate('accept-delete', array("id"=>$res['id'])) . '" class="btn btn-mini" data-toggle="tooltip" title="Accept Deletion"><i class="icon-ok"></i></a> <a href="' . $container->router->generate('remove-delete', array("id"=>$res['id'])) . '" class="btn btn-mini"><i class="icon-ban-circle" data-toggle="tooltip" title="Remove Deletion"></i></a></td>';
               }
               echo '</tr>';
             }
