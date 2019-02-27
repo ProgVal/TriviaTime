@@ -3,7 +3,7 @@ $config = array();
 /**
  * Change db location here to point to your database from the bot
  */
-$config['dbLocation'] = "trivia.db"; // eg "/home/trivia/trivia.db"
+$config['dbLocation'] = "/home/ec2-user/limnoria/plugins/TriviaTime/storage/db/trivia.db"; // eg "/home/trivia/trivia.db"
 
 /**
  * Includes location

@@ -5,7 +5,8 @@ $isMod = false;
 
 if($login->isLoggedIn()) {
   if(!is_null($login->getUser())) {
-    if($login->getUser()->getCapability() == "owner" || $login->getUser()->getCapability() == "triviamod") {
+    $capabilities = $login->getUser()->getCapability();
+    if($capabilities == "owner" || strpos($capabilities, "triviamod") !== false || strpos($capabilities, "triviaadmin") !== false) {
       $isMod = true;
     }
   }
