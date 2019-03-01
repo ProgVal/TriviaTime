@@ -520,7 +520,7 @@ class Game:
         self.storage.updateGame(self.channel, self.numAsked) 
         
         # Retrieve new question from DB
-        if self.numAsked % 25 == 0:
+        if self.numAsked % self.registryValue('kaos.frequencyKAOS') == 0:
             retrievedQuestion = self.retrieveQuestion(True)
         else:
             retrievedQuestion = self.retrieveQuestion(False)

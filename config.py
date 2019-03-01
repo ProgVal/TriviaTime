@@ -96,6 +96,11 @@ conf.registerChannelValue(TriviaTime.kaos, 'hintKAOS',
                 """Seconds between KAOS hints""")
         )
 
+conf.registerChannelValue(TriviaTime.kaos, 'frequencyKAOS',
+        registry.Integer(5,
+                """Number of rounds between KAOS questions""")
+        )
+
 conf.registerChannelValue(TriviaTime.general, 'waitTime', 
         registry.Integer(20,
                 """Seconds between the end of one question and the start of another""")
