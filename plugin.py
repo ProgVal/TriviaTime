@@ -519,9 +519,10 @@ class Game:
         # Update DB with new round number
         self.storage.updateGame(self.channel, self.numAsked) 
         
-        # Retrieve new question from DB
+        # Retrieve KAOS question from DB
         if self.numAsked % self.registryValue('kaos.frequencyKAOS') == 0:
             retrievedQuestion = self.retrieveQuestion(True)
+        # Retrieve new regular question from DB
         else:
             retrievedQuestion = self.retrieveQuestion(False)
         self.questionID = retrievedQuestion['id']
