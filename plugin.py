@@ -519,8 +519,12 @@ class Game:
         # Update DB with new round number
         self.storage.updateGame(self.channel, self.numAsked) 
         
-        # Retrieve new question from DB
-        retrievedQuestion = self.retrieveQuestion()
+        # Retrieve KAOS question from DB
+        if self.numAsked % self.registryValue('kaos.frequencyKAOS') == 0:
+            retrievedQuestion = self.retrieveQuestion(True)
+        # Retrieve new regular question from DB
+        else:
+            retrievedQuestion = self.retrieveQuestion(False)
         self.questionID = retrievedQuestion['id']
         self.questionType = retrievedQuestion['type']
         self.question = retrievedQuestion['question']
@@ -580,9 +584,12 @@ class Game:
         except KeyError:
             pass
 
-    def retrieveQuestion(self):
+    def retrieveQuestion(self, isKaos=False):
         # Retrieve and parse question data from database
-        rawData = self.storage.getRandomQuestionNotAsked(self.channel, self.roundStartedAt)
+        if isKaos == True:
+            rawData = self.storage.getRandomKAOS(self.channel)
+        else:
+            rawData = self.storage.getRandomQuestionNotAsked(self.channel, self.roundStartedAt)
         rawQuestion = rawData['question']
         netTimesAnswered = rawData['num_answered'] - rawData['num_missed']
         questionParts = rawQuestion.split('*')
@@ -899,6 +906,22 @@ class Storage:
         except:
             pass
         c.close()
+
+    def getRandomKAOS(self, channel):
+        c = self.conn.cursor()
+        c.execute('''SELECT *
+                     FROM triviaquestion
+                     WHERE deleted=0 AND
+                           lower(substr(question,1,4))=? AND
+                           id NOT IN
+                               (SELECT tl.line_num
+                                FROM triviagameslog tl
+                                WHERE tl.channel_canonical=?)
+                     ORDER BY random() LIMIT 1''',
+                     ('kaos',ircutils.toLower(channel)))
+        row = c.fetchone()
+        c.close()
+        return row
 
     def getRandomQuestionNotAsked(self, channel, roundStart):
         c = self.conn.cursor()
