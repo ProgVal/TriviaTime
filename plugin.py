@@ -914,7 +914,7 @@ class Storage:
                      WHERE deleted=0 AND
                            lower(substr(question,1,4))=?
                      ORDER BY random() LIMIT 1''',
-                     ('kaos',ircutils.toLower(channel)))
+                     ('kaos',))
         row = c.fetchone()
         c.close()
         return row
