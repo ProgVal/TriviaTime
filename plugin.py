@@ -912,13 +912,9 @@ class Storage:
         c.execute('''SELECT *
                      FROM triviaquestion
                      WHERE deleted=0 AND
-                           lower(substr(question,1,4))=? AND
-                           id NOT IN
-                               (SELECT tl.line_num
-                                FROM triviagameslog tl
-                                WHERE tl.channel_canonical=?)
+                           lower(substr(question,1,4))=?
                      ORDER BY random() LIMIT 1''',
-                     ('kaos',ircutils.toLower(channel)))
+                     ('kaos',))
         row = c.fetchone()
         c.close()
         return row
