@@ -301,37 +301,60 @@ class Game:
                     hint += ' [{0}]'.format(hintStr)
         else:
             ans = str(self.answers[0])
-            if hintNum == 0:
-                for char in ans:
-                    if char in self.unmaskedChars:
-                        hint += char
-                    else:
+            if re.match(r'^([0-9]{4})$', ans) is not None:
+                if hintNum == 0:
+                    for char in ans:
                         hint += charMask
-            elif hintNum == 1:
-                divider = int(len(ans) * ratio)
-                divider = min(divider, 3)
-                divider = min(divider, len(ans)-1)
-                hint += ans[:divider]
-                masked = ans[divider:]
-                for char in masked:
-                    if char in self.unmaskedChars:
-                        hint += char
-                    else:
+                elif hintNum == 1:
+                    divider = 2
+                    hint += ans[:divider]
+                    masked = ans[divider:]
+                    for char in masked:
                         hint += charMask
-            elif hintNum == 2:
-                divider = int(len(ans) * ratio)
-                divider = min(divider, 3)
-                divider = min(divider, len(ans)-1)
-                lettersInARow = divider-1
-                maskedInARow = 0
-                hint += ans[:divider]
-                ansend = ans[divider:]
-                hintsend = ''
-                unmasked = 0
-                if self.registryValue('hints.vowelsHint', self.channel):
-                    hint += self.getMaskedVowels(ansend, divider-1)
-                else:
-                    hint += self.getMaskedRandom(ansend, divider-1)
+                elif hintNum == 2:
+                    divider = 2
+                    hint += ans[:divider]
+                    masked = ans[divider:]
+                    randNum = int(random.randint(0, len(masked)-1))
+                    for i, char in enumerate(masked):
+                        if i == randNum:
+                            hint += char
+                        else:
+                            hint += charMask
+                log.info('Year %s' % ans)
+                log.info('Hint %s' % hint)
+            else:
+                if hintNum == 0:
+                    for char in ans:
+                        if char in self.unmaskedChars:
+                            hint += char
+                        else:
+                            hint += charMask
+                elif hintNum == 1:
+                    divider = int(len(ans) * ratio)
+                    divider = min(divider, 3)
+                    divider = min(divider, len(ans)-1)
+                    hint += ans[:divider]
+                    masked = ans[divider:]
+                    for char in masked:
+                        if char in self.unmaskedChars:
+                            hint += char
+                        else:
+                            hint += charMask
+                elif hintNum == 2:
+                    divider = int(len(ans) * ratio)
+                    divider = min(divider, 3)
+                    divider = min(divider, len(ans)-1)
+                    lettersInARow = divider-1
+                    maskedInARow = 0
+                    hint += ans[:divider]
+                    ansend = ans[divider:]
+                    hintsend = ''
+                    unmasked = 0
+                    if self.registryValue('hints.vowelsHint', self.channel):
+                        hint += self.getMaskedVowels(ansend, divider-1)
+                    else:
+                        hint += self.getMaskedRandom(ansend, divider-1)
         
         return hint.strip()
 
