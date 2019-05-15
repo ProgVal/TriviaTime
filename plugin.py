@@ -477,7 +477,30 @@ class Game:
         hints = self.getHintString(self.hintsCounter)
         self.hintsCounter += 1 #increment hints counter
         self.shownHint = False #reset hint shown
-        self.sendMessage(' Hint %s: \x02\x0312%s' % (self.hintsCounter, hints), 1, 9)        
+        hintMessageString = ' Hint %s: \x02\x0312%s' % (self.hintsCounter, hints)
+        points = self.questionPoints
+        if self.hintsCounter > 1:
+            points /= 2 * (self.hintsCounter - 1)
+
+        if self.questionType == 'kaos':
+            timeRemaining = self.registryValue('kaos.hintKAOS', self.channel)
+            timeRemaining *= 4 - self.hintsCounter
+            questionValue = int(points / (len(self.answers) + 1))
+            answersRemaining = len(self.answers)
+            if self.hintsCounter > 1:
+                hintMessageString += '\x02\x0301 \x02%d\x02 sec Remaining' % (timeRemaining,)
+            else:
+                hintMessageString += '\x02\x0301 \x02%d\x02 Possible Answers \x0301Each Answer : \x02%d\x02 Points' % (answersRemaining, questionValue)
+        else:
+            timeRemaining = self.registryValue('questions.hintTime', self.channel)
+            timeRemaining *= 4 - self.hintsCounter
+            questionValue = points
+            if self.hintsCounter > 1:
+                hintMessageString += '\x02\x0301 \x02%d\x02 sec & \x02%d\x02 Points Remaining' % (timeRemaining, questionValue)
+            else:
+                hintMessageString += '\x02\x0301 Question Value : \x02%d\x02 Points' % (questionValue,)
+
+        self.sendMessage(hintMessageString, 1, 9)
 
     def nextQuestion(self):
         """
@@ -663,7 +686,8 @@ class Game:
 
         # KAOS? report # of answers
         if self.questionType == 'kaos':
-            questionText += ' %d possible answers' % (len(self.answers))
+            questionText += '\x02\x0301 Question Value : \x02%d\x02 Points' % (self.questionPoints,)
+            #questionText += ' %d possible answers' % (len(self.answers))
 
         questionMessageString = ' %s: %s' % (self.numAsked, questionText)
         maxLength = 400
