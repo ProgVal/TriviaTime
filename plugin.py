@@ -295,7 +295,7 @@ class Game:
                             hintStr += self.getMaskedVowels(ansend, divider-1)
                         else:
                             hintStr += self.getMaskedRandom(ansend, divider-1)
-                    hint += ' [{0}]'.format(hintStr)
+                    hint += (' [{0}]' % hintStr)
         else:
             ans = unicode(self.answers[0].decode('utf-8'))
             if hintNum == 0:
