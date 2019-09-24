@@ -584,7 +584,6 @@ class Game:
         # Retrieve and parse question data from database
         rawData = self.storage.getRandomQuestionNotAsked(self.channel, self.roundStartedAt)
         rawQuestion = rawData['question']
-        netTimesAnswered = rawData['num_answered'] - rawData['num_missed']
         questionParts = rawQuestion.split('*')
         
         if len(questionParts) > 1:
@@ -616,14 +615,9 @@ class Game:
             else:
                 points = self.registryValue('questions.defaultPoints', self.channel)
 
-            # Calculate additional points
-            addPoints = -5 * netTimesAnswered
-            addPoints = min(addPoints, 200)
-            addPoints = max(addPoints, -200)
-
             return {'id': rawData['id'],
                     'type': questionType,
-                    'points': points + addPoints,
+                    'points': points,
                     'question': question,
                     'answers': answers
                     }
